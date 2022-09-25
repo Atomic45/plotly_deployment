@@ -5,11 +5,18 @@ function init() {
     console.log(data);
     var sampleNames = data.names;
     sampleNames.forEach((sample) => {
-      selector
+        selector
         .append("option")
         .text(sample)
-        .property("value", sample);
+        .property("value",sample);
     });
+
+
+    // Use the first sample from the list to build the initial plots
+        var firstSample = sampleNames[0];
+        buildGaugeChart(firstSample);
+        buildBarChart(firstSample);
+        buildMetadata(firstSample);
 })}
 
 init();
@@ -34,18 +41,17 @@ function buildMetadata(sample) {
       PANEL.append("h6").text(key.toUpperCase() + ': ' + value); 
     })
 
-
   });
 }
 
 function buildBarChart(sample) {
   d3.json("samples.json").then((data) => {
     var resultArray = data
-    .samples
+    .sample
     .filter(sampleObj => {
       return sampleObj.id == sample
     });
-    
+
     var result = resultArray[0];
     var top_ten_otu_ids = result.otu_ids.slice(0, 10).map(numericIds => {
       return 'OTU ' + numericIds;
@@ -75,7 +81,7 @@ function buildBarChart(sample) {
       Plotly.newPlot('bar', bar_trace, bar_layout)
     
     });
-  }
+}
   
   function buildGaugeChart(sample) {
     d3.json("samples.json").then((data) => {
@@ -171,8 +177,5 @@ function buildBarChart(sample) {
           };
           
           Plotly.newPlot('bubble', data, bubble_layout)
-        
-        });
+        });    
       }
-    
-   
